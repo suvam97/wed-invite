@@ -187,19 +187,3 @@ footer {
         padding-bottom: 125%; /* Further adjust aspect ratio for mobile */
     }
 }
-
-/* Styles for tablets */
-@media (max-width: 768px) {
-    body {
-        font-size: 14px;
-        /* other adjustments */
-    }
-}
-
-/* Styles for mobile phones */
-@media (max-width: 480px) {
-    body {
-        font-size: 12px;
-        /* other adjustments */
-    }
-}
