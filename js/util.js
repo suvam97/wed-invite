@@ -178,43 +178,83 @@ export const util = (() => {
             });
     };
 
-    const open = async (button) => {
+    const showEvents = (events) => {
+        // Hide all event cards initially
+        document.querySelectorAll('.event-card').forEach(card => {
+            card.style.display = 'none';
+        });
+    
+        // Show only the specified events
+        events.forEach(event => {
+            document.querySelectorAll(`[data-event="${event}"]`).forEach(card => {
+                card.style.display = 'block';
+                AOS.init();
+            });
+        });
+    };
+    
+    const openInvitation = async (button, events) => {
         button.disabled = true;
         confetti({
             origin: { y: 1 },
             zIndex: 1057
         });
-
+    
         document.querySelector('body').style.overflowY = 'scroll';
         if (storage('information').get('info')) {
             document.getElementById('information')?.remove();
         }
-
+    
         const token = document.querySelector('body').getAttribute('data-key');
         if (!token || token.length === 0) {
             document.getElementById('ucapan')?.remove();
             document.querySelector('a.nav-link[href="#ucapan"]')?.closest('li.nav-item')?.remove();
         }
-
+    
         AOS.init();
-
+    
         countDownDate();
         opacity('welcome', 0.025);
-
         audio.play();
         audio.showButton();
-
+    
         theme.check();
         theme.showButtonChangeTheme();
-
+    
+        // Show relevant events
+        showEvents(events);
+    
         if (!token || token.length === 0) {
             return;
         }
-
+    
         const status = await storeConfig(token);
         if (status === 200) {
             animation();
-            await comment.comment();
+        }
+    };
+    
+    // For Suvam's invitation
+    const openSuvam = (button) => openInvitation(button, ['marriage', 'reception']);
+    
+    // For Sagarika's invitation
+    const openSagarika = (button) => {
+        // Call the generic invitation opening function
+        openInvitation(button, ['mehendi', 'marriage']);
+        
+        // After the invitation is opened, modify the text for the Marriage event
+        const marriageCard = document.querySelector('[data-event="marriage"]');
+        if (marriageCard) {
+            const haldiText = marriageCard.querySelector('p.text-center');
+            if (haldiText) {
+                haldiText.innerHTML = 'Haldi at <b>Govind Vihar, Berhampur </b> <br/> Followed by Marriage <b>Olive Garden, Berhampur.';
+            }
+            // Update the time for the Marriage event
+            const timeElement = marriageCard.querySelector('.bi-clock + span');
+            if (timeElement) {
+                timeElement.innerText = '10:00 AM';
+            }
+
         }
     };
 
@@ -245,7 +285,8 @@ export const util = (() => {
     };
 
     return {
-        open,
+        openSuvam,
+        openSagarika,
         copy,
         show,
         close,
