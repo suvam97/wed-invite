@@ -31,7 +31,7 @@ export const request = (method, path) => {
                     return res;
                 })
                 .then(...params)
-                .catch((err) => alert(err));
+                // .catch((err) => alert(err));
         },
         download(...params) {
             return fetch(url + path, req)
